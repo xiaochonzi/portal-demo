@@ -21,6 +21,7 @@ import org.springframework.security.config.annotation.web.configurers.Expression
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -86,14 +87,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry registry = http.authorizeRequests();
-        registry.antMatchers("/login").permitAll();
+        registry.antMatchers("/index/ignoreUrl").permitAll();
         registry.anyRequest().authenticated();
-
         http.csrf().disable();
+
         http.logout().logoutSuccessHandler(logoutSuccessHandler());
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAt(jwtAuthFilter(), BasicAuthenticationFilter.class);// 这里可以放到logoutFilter之前
         http.exceptionHandling().accessDeniedHandler(new DefaultAccessDeniedHandler());
+        http.exceptionHandling().authenticationEntryPoint(new DefaultAuthenticationEntryPoint());
     }
 }

@@ -26,4 +26,9 @@ public class IndexController {
     public Response create() {
         return Response.ok("create");
     }
+
+    @RequestMapping("ignoreUrl")
+    public Response ignoreUrl(){
+        return Response.ok();
+    }
 }

@@ -37,10 +37,12 @@ public class JwtAuthFilter extends BasicAuthenticationFilter {
         if (StringUtils.isNullOrEmpty(token)) {
             token = request.getParameter(SecurityConstant.TOKEN);
         }
+        if (StringUtils.isNullOrEmpty(token)){
+            chain.doFilter(request, response);
+            return;
+        }
         try {
-            if (StringUtils.isNullOrEmpty(token)) {
-                throw new AuthenticationCredentialsNotFoundException(ErrorCode.TOKEN_EXPIRE.getMessage());
-            }
+
             UsernamePasswordAuthenticationToken authRequest = getAuthentication(token);
             authRequest.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authRequest);
